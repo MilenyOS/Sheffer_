@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sheffer Quiz Mágico</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom, #121212, #1f1f1f);
+      color: #fff;
+      text-align: center;
+      padding: 2rem;
+    }
+    .quiz-container {
+      max-width: 700px;
+      margin: auto;
+      background-color: #2c2c2c;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    }
+    h1 {
+      color: #ffc107;
+    }
+    .question {
+      margin: 1.5rem 0;
+      font-size: 1.2rem;
+    }
+    .options button {
+      display: block;
+      margin: 0.5rem auto;
+      padding: 0.6rem 1.2rem;
+      border: none;
+      background-color: #4caf50;
+      color: white;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .options button:hover {
+      background-color: #45a049;
+    }
+    #result, #certificate {
+      margin-top: 2rem;
+      display: none;
+    }
+    #certificate {
+      border: 2px dashed #ffc107;
+      padding: 1.5rem;
+      border-radius: 10px;
+      background-color: #333;
+      color: #ffc107;
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <h1>Desafío Mágico de Sheffer</h1>
+    <div id="quiz"></div>
+    <button id="submit">Enviar respuestas</button>
+    <div id="result"></div>
+    <div id="certificate"></div>
+  </div>
+
+  <script>
+    const questions = [
+      { q: "¿Cuál es el lenguaje de programación favorito de un ingeniero de sistemas?", a: "JavaScript", options: ["Latín", "JavaScript", "GoblinScript", "Elvish"] },
+      { q: "¿Qué hechizo sería útil para limpiar código?", a: "Refactorum", options: ["Avada Kedavra", "Expecto Patronum", "Refactorum", "Wingardium Leviosa"] },
+      { q: "¿Qué representa mejor a un mago de datos?", a: "Un gráfico de barras", options: ["Una varita", "Una escoba", "Un gráfico de barras", "Un sombrero"] },
+      { q: "¿Qué hace sostenible a un hechicero moderno?", a: "Usa energías limpias", options: ["Come tofu mágico", "Usa energías limpias", "Vuela en dragón eléctrico", "Hace compost digital"] },
+      { q: "¿Cuál es la consola mágica por excelencia?", a: "Terminal", options: ["Bola de cristal", "Consola mágica", "Terminal", "Piedra filosofal"] },
+      { q: "¿Qué conjuro genera buenos amigos?", a: "Amicitia Maxima", options: ["Prietus Codex", "Amicitia Maxima", "NullPointerus", "Printamigos"] },
+      { q: "¿Qué hechizo impide bugs?", a: "Debuggium", options: ["Bugulus Extremo", "Nullus Codex", "Debuggium", "Fixarius"] },
+      { q: "¿Qué lugar de Hogwarts sería ideal para programar?", a: "La biblioteca", options: ["El campo de Quidditch", "La sala común", "La biblioteca", "El Gran Comedor"] },
+      { q: "¿Quién sería el mejor profesor de Algoritmos?", a: "Hermione", options: ["Hagrid", "Ron", "Hermione", "Dobby"] },
+      { q: "¿Qué red mágica usaría un ingeniero de datos?", a: "Wi-Findor", options: ["Ethernetus", "Wi-Findor", "MagicLAN", "Dumbledot"] }
+    ];
+
+    const quizDiv = document.getElementById('quiz');
+    const resultDiv = document.getElementById('result');
+    const certDiv = document.getElementById('certificate');
+
+    questions.forEach((q, index) => {
+      const qDiv = document.createElement('div');
+      qDiv.className = 'question';
+      qDiv.innerHTML = `<p>${index + 1}. ${q.q}</p>`;
+      const optsDiv = document.createElement('div');
+      optsDiv.className = 'options';
+      q.options.forEach(option => {
+        const btn = document.createElement('button');
+        btn.textContent = option;
+        btn.onclick = () => {
+          const prev = qDiv.querySelector('.selected');
+          if (prev) prev.classList.remove('selected');
+          btn.classList.add('selected');
+          btn.dataset.selected = option;
+        };
+        optsDiv.appendChild(btn);
+      });
+      qDiv.appendChild(optsDiv);
+      quizDiv.appendChild(qDiv);
+    });
+
+    document.getElementById('submit').onclick = () => {
+      let correct = 0;
+      document.querySelectorAll('.question').forEach((qEl, i) => {
+        const selected = qEl.querySelector('.selected');
+        if (selected && selected.dataset.selected === questions[i].a) correct++;
+      });
+      resultDiv.style.display = 'block';
+      resultDiv.textContent = `¡Obtuviste ${correct} de 10 respuestas correctas!`;
+
+      certDiv.style.display = 'block';
+      certDiv.innerHTML = `
+        <h2>🎓 Certificado de Magia y Datos</h2>
+        <p>Otorgado a <strong>Sheffer</strong> por superar el reto con ${correct}/10 aciertos.</p>
+        <p>¡Felicidades por ser un mago de la tecnología! ⚡</p>
+      `;
+    };
+  </script>
+</body>
+</html>
