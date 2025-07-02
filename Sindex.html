@@ -29,11 +29,14 @@
       display: block;
       margin-top: 8px;
     }
-    input[type="number"], select {
+    input[type="number"], select, input[type="range"] {
       width: 100%;
       padding: 5px;
       border-radius: 5px;
       border: 1px solid #ccc;
+    }
+    input[type="range"] {
+      accent-color: #4CAF50;
     }
     button {
       background: #4CAF50;
@@ -47,24 +50,41 @@
       display: block;
       margin-left: auto;
       margin-right: auto;
+      transition: background 0.3s ease;
     }
     button:hover {
       background: #388e3c;
     }
-    .results {
+    .results, .certificate {
       margin-top: 30px;
       background: #e8f5e9;
       padding: 20px;
       border-radius: 10px;
       border: 2px dashed #66bb6a;
+      opacity: 0;
+      transform: translateY(10px);
+      animation: fadeInUp 0.8s forwards ease-out;
     }
     .certificate {
-      margin-top: 20px;
-      text-align: center;
       background: #fff9c4;
-      padding: 20px;
-      border-radius: 10px;
       border: 2px solid #fdd835;
+      text-align: center;
+    }
+    output {
+      font-weight: bold;
+      display: inline-block;
+      margin-left: 10px;
+    }
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .emoji-range::after {
+      content: attr(data-emoji);
+      font-size: 1.2rem;
+      margin-left: 8px;
     }
   </style>
 </head>
@@ -72,7 +92,8 @@
   <h1>🎉 Sheffer Quiz Mágico Interactivo 🎉</h1>
   <form id="quizForm">
     <div class="question">🎂 ¿Cuántas velas soplaste?
-      <input type="range" name="q1" min="0" max="100" value="10" />
+      <input type="range" name="q1" min="0" max="100" value="10" oninput="q1output.value = this.value; setEmoji(this, q1output, ['🕯️','🔥','🎇'])" />
+      <output id="q1output">10</output>
     </div>
     <div class="question">🍰 ¿Cuántas porciones de pastel comiste?
       <select name="q2">
@@ -88,31 +109,36 @@
       <label class="option-label"><input type="radio" name="q3" value="0" /> No</label>
     </div>
     <div class="question">📱 ¿Cuántos mensajes recibiste?
-      <input type="number" name="q4" min="0" value="20" />
+      <input type="range" name="q4" min="0" max="500" value="20" oninput="q4output.value = this.value; setEmoji(this, q4output, ['📨','📱','📲'])" />
+      <output id="q4output">20</output>
     </div>
     <div class="question">😂 ¿Cuántas carcajadas emitiste?
-      <input type="range" name="q5" min="0" max="50" value="10" />
+      <input type="range" name="q5" min="0" max="50" value="10" oninput="q5output.value = this.value; setEmoji(this, q5output, ['🙂','😄','🤣'])" />
+      <output id="q5output">10</output>
     </div>
     <div class="question">🧍 ¿Cuántas interacciones humanas toleraste?
       <select name="q6">
         <option value="0">0</option>
-        <option value="1">1-3</option>
-        <option value="3">4-6</option>
+        <option value="2">1-3</option>
+        <option value="4">4-6</option>
         <option value="6">7+</option>
       </select>
     </div>
     <div class="question">🍰 Porcentaje del pastel aprovechado
-      <input type="range" name="q7" min="0" max="100" value="75" />
+      <input type="range" name="q7" min="0" max="100" value="75" oninput="q7output.value = this.value + '%'; setEmoji(this, q7output, ['🥄','🍽️','🧁'])" />
+      <output id="q7output">75%</output>
     </div>
     <div class="question">🧊 Nivel de frialdad emocional residual
-      <input type="range" name="q8" min="0" max="10" value="5" />
+      <input type="range" name="q8" min="0" max="10" value="5" oninput="q8output.value = this.value; setEmoji(this, q8output, ['😊','😐','🥶'])" />
+      <output id="q8output">5</output>
     </div>
     <div class="question">🧦 ¿Usaste medias de diferente par hoy?
       <label class="option-label"><input type="radio" name="q9" value="1" /> Sí</label>
       <label class="option-label"><input type="radio" name="q9" value="0" /> No</label>
     </div>
     <div class="question">🧙‍♂️ Hechizos digitales usados para evitar contacto humano
-      <input type="number" name="q10" min="0" value="2" />
+      <input type="range" name="q10" min="0" max="10" value="2" oninput="q10output.value = this.value; setEmoji(this, q10output, ['✨','🧙‍♂️','🪄'])" />
+      <output id="q10output">2</output>
     </div>
     <button type="submit">🧪 Generar certificado verde de cumpleaños</button>
   </form>
@@ -120,6 +146,13 @@
   <div class="certificate" id="certificate" style="display: none;"></div>
 
   <script>
+    function setEmoji(range, output, emojis) {
+      const val = parseInt(range.value);
+      const max = parseInt(range.max);
+      const index = val < max / 3 ? 0 : val < (2 * max) / 3 ? 1 : 2;
+      output.textContent = range.value + ' ' + emojis[index];
+    }
+
     document.getElementById("quizForm").addEventListener("submit", function (e) {
       e.preventDefault();
       const form = new FormData(this);
@@ -144,10 +177,12 @@
         <p>Este certificado acredita que <strong>Sheffer</strong> ha completado exitosamente el cuestionario mágico de sostenibilidad emocional y eficiencia festiva.</p>
         <p>Emitido el ${new Date().toLocaleDateString()} con ❤️ y 🍰.</p>`;
 
-      document.getElementById("results").innerHTML = resultsHTML;
-      document.getElementById("results").style.display = "block";
-      document.getElementById("certificate").innerHTML = certificadoHTML;
-      document.getElementById("certificate").style.display = "block";
+      const resultsDiv = document.getElementById("results");
+      const certDiv = document.getElementById("certificate");
+      resultsDiv.innerHTML = resultsHTML;
+      certDiv.innerHTML = certificadoHTML;
+      resultsDiv.style.display = "block";
+      certDiv.style.display = "block";
     });
   </script>
 </body>
