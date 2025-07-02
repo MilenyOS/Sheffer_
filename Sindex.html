@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sheffer Quiz Mágico</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      padding: 20px;
+      color: #333;
+      max-width: 700px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+      color: #2b5876;
+    }
+    .question {
+      background: #ffffff;
+      border-left: 6px solid #4CAF50;
+      margin: 15px 0;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    label, .option-label {
+      display: block;
+      margin-top: 8px;
+    }
+    input[type="number"], select {
+      width: 100%;
+      padding: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #4CAF50;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 20px;
+      font-size: 1rem;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    button:hover {
+      background: #388e3c;
+    }
+    .results {
+      margin-top: 30px;
+      background: #e8f5e9;
+      padding: 20px;
+      border-radius: 10px;
+      border: 2px dashed #66bb6a;
+    }
+    .certificate {
+      margin-top: 20px;
+      text-align: center;
+      background: #fff9c4;
+      padding: 20px;
+      border-radius: 10px;
+      border: 2px solid #fdd835;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎉 Sheffer Quiz Mágico Interactivo 🎉</h1>
+  <form id="quizForm">
+    <div class="question">🎂 ¿Cuántas velas soplaste?
+      <input type="range" name="q1" min="0" max="100" value="10" />
+    </div>
+    <div class="question">🍰 ¿Cuántas porciones de pastel comiste?
+      <select name="q2">
+        <option value="0">0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4+</option>
+      </select>
+    </div>
+    <div class="question">🎈 ¿Reutilizaste los globos?
+      <label class="option-label"><input type="radio" name="q3" value="1" /> Sí</label>
+      <label class="option-label"><input type="radio" name="q3" value="0" /> No</label>
+    </div>
+    <div class="question">📱 ¿Cuántos mensajes recibiste?
+      <input type="number" name="q4" min="0" value="20" />
+    </div>
+    <div class="question">😂 ¿Cuántas carcajadas emitiste?
+      <input type="range" name="q5" min="0" max="50" value="10" />
+    </div>
+    <div class="question">🧍 ¿Cuántas interacciones humanas toleraste?
+      <select name="q6">
+        <option value="0">0</option>
+        <option value="1">1-3</option>
+        <option value="3">4-6</option>
+        <option value="6">7+</option>
+      </select>
+    </div>
+    <div class="question">🍰 Porcentaje del pastel aprovechado
+      <input type="range" name="q7" min="0" max="100" value="75" />
+    </div>
+    <div class="question">🧊 Nivel de frialdad emocional residual
+      <input type="range" name="q8" min="0" max="10" value="5" />
+    </div>
+    <div class="question">🧦 ¿Usaste medias de diferente par hoy?
+      <label class="option-label"><input type="radio" name="q9" value="1" /> Sí</label>
+      <label class="option-label"><input type="radio" name="q9" value="0" /> No</label>
+    </div>
+    <div class="question">🧙‍♂️ Hechizos digitales usados para evitar contacto humano
+      <input type="number" name="q10" min="0" value="2" />
+    </div>
+    <button type="submit">🧪 Generar certificado verde de cumpleaños</button>
+  </form>
+  <div class="results" id="results" style="display: none;"></div>
+  <div class="certificate" id="certificate" style="display: none;"></div>
+
+  <script>
+    document.getElementById("quizForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const form = new FormData(this);
+      const values = {};
+      for (let [key, value] of form.entries()) {
+        values[key] = parseFloat(value);
+      }
+      const co2 = (values.q1 * 0.0001).toFixed(4);
+      const huellaEmocional = 80 + Math.floor(values.q5 / 2);
+      const eficienciaAlegria = (values.q5 / (values.q4 + 1) * 10).toFixed(1);
+
+      const resultsHTML = `
+        <h2>🌱 Resultados mágicos</h2>
+        <ul>
+          <li>CO₂ generado al soplar velas: <strong>${co2} kg</strong></li>
+          <li>Huella emocional positiva: <strong>${huellaEmocional}%</strong></li>
+          <li>Eficiencia en el uso de alegría: <strong>${eficienciaAlegria} unidades/kWh</strong></li>
+        </ul>`;
+
+      const certificadoHTML = `
+        <h2>🎓 Certificado Verde de Cumpleaños</h2>
+        <p>Este certificado acredita que <strong>Sheffer</strong> ha completado exitosamente el cuestionario mágico de sostenibilidad emocional y eficiencia festiva.</p>
+        <p>Emitido el ${new Date().toLocaleDateString()} con ❤️ y 🍰.</p>`;
+
+      document.getElementById("results").innerHTML = resultsHTML;
+      document.getElementById("results").style.display = "block";
+      document.getElementById("certificate").innerHTML = certificadoHTML;
+      document.getElementById("certificate").style.display = "block";
+    });
+  </script>
+</body>
+</html>
